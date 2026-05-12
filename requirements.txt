@@ -1,0 +1,11 @@
+torch
+transformers
+accelerate
+bitsandbytes
+langchain
+langchain-community
+langchain-huggingface
+chromadb
+sentence-transformers
+pypdf
+openpyxl

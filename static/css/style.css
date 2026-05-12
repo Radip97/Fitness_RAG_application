@@ -1,0 +1,302 @@
+/*
+ * Fitness AI Coach - Cyber Gym Styling
+ * - Aesthetic: Dark Modern, Neon Accents, Glassmorphism
+ */
+
+:root {
+    --bg: #09090b; /* Deep Metallic Zinc */
+    --sidebar-bg: #18181b; /* Dark Slate */
+    --accent: #00e5ff; /* Electric Cyan */
+    --accent-alt: #7c3aed; /* Neon Violet */
+    --accent-glow: rgba(0, 229, 255, 0.3);
+    --text: #f8fafc;
+    --text-dim: #a1a1aa;
+    --glass-bg: rgba(24, 24, 27, 0.8);
+    --glass-border: rgba(63, 63, 70, 0.6);
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    background-color: var(--bg);
+    color: var(--text);
+    font-family: 'Inter', sans-serif;
+    height: 100vh;
+    overflow: hidden;
+}
+
+h1, h2, h3, .metric-card .value {
+    font-family: 'Outfit', sans-serif;
+}
+
+.app-container {
+    display: grid;
+    grid-template-columns: 280px 1fr;
+    height: 100vh;
+}
+
+/* Sidebar Styling */
+.sidebar {
+    background-color: var(--sidebar-bg);
+    border-right: 1px solid var(--glass-border);
+    padding: 2rem;
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+}
+
+.brand {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.brand img {
+    width: 40px;
+    height: 40px;
+    filter: drop-shadow(0 0 10px var(--accent-glow));
+}
+
+.brand h1 {
+    font-size: 1.5rem;
+    letter-spacing: -1px;
+    background: linear-gradient(90deg, var(--accent), var(--accent-alt));
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.user-id-card .greeting {
+    font-size: 1.1rem;
+    color: var(--text);
+    margin-bottom: 0.5rem;
+}
+
+.badges {
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+}
+
+.badge {
+    background: var(--glass-bg);
+    border: 1px solid var(--glass-border);
+    padding: 2px 10px;
+    border-radius: 99px;
+    font-size: 0.75rem;
+    color: var(--accent);
+}
+
+.metrics {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.metric-card {
+    padding: 1.25rem;
+    border-radius: 12px;
+    background: var(--glass-bg);
+    border: 1px solid var(--glass-border);
+    backdrop-filter: blur(10px);
+    transition: all 0.3s ease;
+}
+
+.metric-card:hover {
+    border-color: var(--accent);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+}
+
+.metric-card.highlight {
+    border-left: 4px solid var(--accent);
+}
+
+.metric-card .label {
+    font-size: 0.85rem;
+    color: var(--text-dim);
+    margin-bottom: 0.25rem;
+}
+
+.metric-card .value {
+    font-size: 1.5rem;
+    color: var(--text);
+}
+
+.nav-btn {
+    width: 100%;
+    padding: 1rem;
+    background: transparent;
+    border: 1px solid var(--glass-border);
+    border-radius: 10px;
+    color: var(--text-dim);
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+    margin-bottom: 0.5rem;
+}
+
+.nav-btn.active {
+    background: var(--accent);
+    color: var(--bg);
+    border-color: var(--accent);
+}
+
+.nav-btn:hover:not(.active) {
+    border-color: var(--accent);
+    color: var(--accent);
+}
+
+/* Chat Main Viewport */
+.chat-viewport {
+    display: flex;
+    flex-direction: column;
+    padding: 2rem;
+    position: relative;
+    height: 100vh; /* Enforce full screen height */
+    overflow: hidden; /* Prevent parent from scrolling */
+}
+
+.chat-header {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding-bottom: 1.5rem;
+    border-bottom: 1px solid var(--glass-border);
+    margin-bottom: 2rem;
+}
+
+.status-dot {
+    width: 8px;
+    height: 8px;
+    background-color: var(--accent);
+    border-radius: 50%;
+    box-shadow: 0 0 10px var(--accent);
+}
+
+.status-text {
+    font-size: 0.85rem;
+    color: var(--text-dim);
+}
+
+.chat-stream {
+    flex: 1;
+    overflow-y: auto;
+    padding-right: 1rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+/* Chat messages & animations */
+.msg {
+    display: flex;
+    gap: 1rem;
+    max-width: 85%;
+    animation: fadeIn 0.4s ease-out;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.msg.assistant {
+    align-self: flex-start;
+}
+
+.msg.user {
+    align-self: flex-end;
+    flex-direction: row-reverse;
+}
+
+.avatar {
+    width: 40px;
+    height: 40px;
+    background: var(--sidebar-bg);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 10px;
+    font-size: 1.2rem;
+    border: 1px solid var(--glass-border);
+}
+
+.bubble {
+    padding: 1rem 1.25rem;
+    border-radius: 15px;
+    background: var(--sidebar-bg);
+    border: 1px solid var(--glass-border);
+    line-height: 1.5;
+    font-size: 0.95rem;
+    white-space: pre-wrap; /* Preserves plain text line breaks */
+}
+
+.msg.user .bubble {
+    background: linear-gradient(135deg, var(--accent-alt), var(--accent));
+    color: #000;
+    border: none;
+    font-weight: 600;
+    box-shadow: 0 4px 15px rgba(124, 58, 237, 0.3);
+}
+
+/* Input Area Styling */
+.chat-input-area {
+    margin-top: 2rem;
+    padding: 1.5rem;
+    background: var(--glass-bg);
+    border: 1px solid var(--glass-border);
+    backdrop-filter: blur(15px);
+    border-radius: 15px;
+}
+
+#chat-form {
+    display: flex;
+    gap: 1rem;
+}
+
+#user-input {
+    flex: 1;
+    background: rgba(15, 23, 42, 0.5);
+    border: 1px solid var(--glass-border);
+    padding: 0.75rem 1.25rem;
+    border-radius: 10px;
+    color: var(--text);
+    outline: none;
+    transition: 0.3s;
+}
+
+#user-input:focus {
+    border-color: var(--accent);
+}
+
+#chat-form button {
+    background: var(--accent);
+    color: var(--bg);
+    border: none;
+    padding: 0 1.5rem;
+    border-radius: 10px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+#chat-form button:hover {
+    transform: scale(1.05) translateY(-2px);
+    box-shadow: 0 0 20px var(--accent-glow);
+    background: linear-gradient(135deg, var(--accent), var(--accent-alt));
+    color: #fff;
+}
+
+/* Utilities */
+.mt-auto { margin-top: auto; }
+
+/* Scrollbar Cleanup */
+.chat-stream::-webkit-scrollbar { width: 5px; }
+.chat-stream::-webkit-scrollbar-track { background: transparent; }
+.chat-stream::-webkit-scrollbar-thumb { background: var(--glass-border); border-radius: 10px; }
+.chat-stream::-webkit-scrollbar-thumb:hover { background: var(--accent); }

@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Synapse Strength AI</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}?v=1.1">
+    <!-- Google Fonts: Inter & Outfit -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&family=Outfit:wght@600;800&display=swap" rel="stylesheet">
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <div class="app-container">
+        <!-- Sidebar: User Identity -->
+        <aside class="sidebar">
+            <div class="brand">
+                <img src="{{ url_for('static', filename='img/logo.webp') }}" alt="Synapse Logo">
+                <h1>Synapse Strength</h1>
+            </div>
+
+            <div class="user-id-card">
+                <p class="greeting">Hello, <span id="user-name">...</span>!</p>
+                <div class="badges">
+                    <span class="badge" id="user-goal">Maintenance</span>
+                    <span class="badge" id="user-split">Not Set</span>
+                </div>
+            </div>
+
+            <div class="metrics">
+                <div class="metric-card glass">
+                    <p class="label">Current Weight</p>
+                    <p class="value" id="user-weight">-- kg</p>
+                </div>
+                <div class="metric-card glass">
+                    <p class="label">Body Fat %</p>
+                    <p class="value" id="user-bf">-- %</p>
+                </div>
+                <div class="metric-card glass highlight">
+                    <p class="label">Bench PR</p>
+                    <p class="value" id="user-bench">-- kg</p>
+                </div>
+            </div>
+
+            <div class="navigation mt-auto">
+                <button class="nav-btn active">Chat with Coach</button>
+                <button class="nav-btn" onclick="window.location.href='/dashboard'">Progress Dashboard</button>
+            </div>
+        </aside>
+
+        <!-- Main Content: Chat -->
+        <main class="chat-viewport">
+            <header class="chat-header">
+                <img src="{{ url_for('static', filename='img/logo.webp') }}" alt="Logo" style="width: 28px; height: 28px; object-fit: contain;">
+                <h2>Fitness AI</h2>
+                <span class="status-dot"></span>
+                <p class="status-text">Using Qwen-2.5 3B & GPU</p>
+            </header>
+
+            <div id="chat-stream" class="chat-stream">
+                <div class="msg assistant">
+                    <div class="avatar">🤖</div>
+                    <div class="bubble">Welcome to Synapse Strength! I am your AI personal trainer. You can ask me how to perform exercises, muscle group targeting, or tell me to build customized workouts based on Strength, Cardiovascular, and Flexibility data.</div>
+                </div>
+            </div>
+
+            <div class="chat-input-area">
+                <form id="chat-form">
+                    <input type="text" id="user-input" placeholder="Enter your query (e.g., 'I weigh 145 lb')..." autocomplete="off">
+                    <button type="submit">Enter &crarr;</button>
+                </form>
+            </div>
+        </main>
+    </div>
+
+    <script src="{{ url_for('static', filename='js/main.js') }}?v=1.1"></script>
+</body>
+</html>

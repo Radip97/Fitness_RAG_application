@@ -1,0 +1,25 @@
+# Virtual Environment
+rag_env/
+venv/
+env/
+.env
+
+# Python Cache
+__pycache__/
+*.py[cod]
+*$py.class
+*.pyo
+
+# Database and Vector Stores
+chroma_db/
+*.db
+*.sqlite3
+
+# IDEs and Editors
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Misc
+.DS_Store

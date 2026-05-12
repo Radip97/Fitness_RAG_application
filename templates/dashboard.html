@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Synapse - Progress Dashboard</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}?v=1.1">
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&family=Outfit:wght@600;800&display=swap" rel="stylesheet">
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        .dashboard-viewport {
+            flex: 1;
+            padding: 2rem;
+            display: flex;
+            flex-direction: column;
+            gap: 2rem;
+            overflow-y: auto;
+            background: linear-gradient(135deg, rgba(8,8,8,0.7), rgba(20,20,25,0.7));
+        }
+        .charts-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            gap: 2rem;
+        }
+        .chart-card {
+            background: rgba(30, 30, 40, 0.4);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            border-radius: 16px;
+            padding: 1.5rem;
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+            min-height: 300px;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+        }
+        .chart-card h3 {
+            margin-top: 0;
+            margin-bottom: 1rem;
+            font-family: 'Outfit', sans-serif;
+            font-size: 1.1rem;
+            color: #fff;
+            text-shadow: 0 0 10px rgba(78, 205, 196, 0.2);
+        }
+        canvas {
+            width: 100% !important;
+            height: 100% !important;
+        }
+        .chart-wrapper {
+            position: relative;
+            height: 350px;
+            width: 100%;
+        }
+    </style>
+</head>
+<body>
+    <div class="app-container">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="brand">
+                <img src="{{ url_for('static', filename='img/logo.webp') }}" alt="Synapse Logo">
+                <h1>Synapse Strength</h1>
+            </div>
+
+            <div class="user-id-card">
+                <p class="greeting">Hello, <span id="user-name">...</span>!</p>
+                <div class="badges">
+                    <span class="badge" id="user-goal">Maintenance</span>
+                    <span class="badge" id="user-split">Not Set</span>
+                </div>
+            </div>
+
+            <div class="metrics">
+                <div class="metric-card glass">
+                    <p class="label">Current Weight</p>
+                    <p class="value" id="user-weight">-- kg</p>
+                </div>
+                <div class="metric-card glass">
+                    <p class="label">Body Fat %</p>
+                    <p class="value" id="user-bf">-- %</p>
+                </div>
+                <div class="metric-card glass highlight">
+                    <p class="label">Bench PR</p>
+                    <p class="value" id="user-bench">-- kg</p>
+                </div>
+            </div>
+
+            <div class="navigation mt-auto">
+                <button class="nav-btn" onclick="window.location.href='/'">Chat with Coach</button>
+                <button class="nav-btn active">Progress Dashboard</button>
+            </div>
+        </aside>
+
+        <!-- Main Content: Dashboard -->
+        <main class="dashboard-viewport">
+            <header class="chat-header" style="background: none; border-bottom: 1px solid rgba(255,255,255,0.05); padding-bottom: 1rem; margin-bottom: 0;">
+                <h2>Analytics Overview</h2>
+                <span style="flex:1"></span>
+                <p class="status-text">Synchronized via SQLite</p>
+            </header>
+
+            <div class="charts-grid">
+                <!-- Powerlifting Growth -->
+                <div class="chart-card">
+                    <h3>Powerlifting PR Progress (kg)</h3>
+                    <div class="chart-wrapper">
+                        <canvas id="liftsChart"></canvas>
+                    </div>
+                </div>
+                
+                <!-- Bodyweight Trends -->
+                <div class="chart-card">
+                    <h3>Body Mass Trajectory (kg)</h3>
+                    <div class="chart-wrapper">
+                        <canvas id="weightChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- We use a custom inline script to render the chart logic natively -->
+    <script>
+        // Populate sidebar using the existing API endpoint
+        async function fetchSidebarStats() {
+            try {
+                const res = await fetch('/api/stats');
+                const stats = await res.json();
+                document.getElementById('user-name').innerText = stats.name || "Athlete";
+                document.getElementById('user-weight').innerText = `${stats.weight} kg`;
+                document.getElementById('user-bf').innerText = `${stats.bf_pct} %`;
+                document.getElementById('user-goal').innerText = stats.goal;
+                document.getElementById('user-split').innerText = stats.split;
+                document.getElementById('user-bench').innerText = stats.bench_pr;
+            } catch (e) {
+                console.error(e);
+            }
+        }
+
+        // Render data via ChartJS
+        async function renderCharts() {
+            try {
+                const res = await fetch('/api/logs');
+                const data = await res.json();
+                
+                if(!data || data.length === 0) return;
+
+                const dates = data.map(row => {
+                    const d = new Date(row.timestamp);
+                    return `${d.getMonth()+1}/${d.getDate()}`;
+                });
+                
+                const benchData = data.map(row => row.pr_bench);
+                const squatData = data.map(row => row.pr_squat);
+                const deadliftData = data.map(row => row.pr_deadlift);
+                const weightData = data.map(row => row.weight_kg);
+
+                // Common sophisticated styling
+                Chart.defaults.color = 'rgba(255,255,255,0.6)';
+                Chart.defaults.font.family = 'Inter';
+
+                // Lifts Chart
+                new Chart(document.getElementById('liftsChart'), {
+                    type: 'line',
+                    data: {
+                        labels: dates,
+                        datasets: [
+                            { label: 'Deadlift', data: deadliftData, borderColor: '#ff6b6b', backgroundColor: 'rgba(255, 107, 107, 0.1)', tension: 0.4, fill: true },
+                            { label: 'Squat', data: squatData, borderColor: '#4ecdc4', backgroundColor: 'rgba(78, 205, 196, 0.1)', tension: 0.4, fill: true },
+                            { label: 'Bench Press', data: benchData, borderColor: '#ffe66d', backgroundColor: 'rgba(255, 230, 109, 0.1)', tension: 0.4, fill: true }
+                        ]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: { legend: { position: 'top' } },
+                        scales: {
+                            y: { grid: { color: 'rgba(255,255,255,0.05)' } },
+                            x: { grid: { color: 'rgba(255,255,255,0.05)' } }
+                        }
+                    }
+                });
+
+                // Weight Chart
+                new Chart(document.getElementById('weightChart'), {
+                    type: 'line',
+                    data: {
+                        labels: dates,
+                        datasets: [
+                            { label: 'Bodyweight', data: weightData, borderColor: '#a06cd5', backgroundColor: 'rgba(160, 108, 213, 0.2)', tension: 0.4, fill: true }
+                        ]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: { legend: { position: 'top' } },
+                        scales: {
+                            y: { grid: { color: 'rgba(255,255,255,0.05)' } },
+                            x: { grid: { color: 'rgba(255,255,255,0.05)' } }
+                        }
+                    }
+                });
+
+            } catch (e) {
+                console.error("Failed to render charts:", e);
+            }
+        }
+
+        window.onload = () => {
+            fetchSidebarStats();
+            renderCharts();
+        };
+    </script>
+</body>
+</html>
