@@ -53,7 +53,9 @@ python vectorize.py
 ```bash
 python app.py
 ```
-> Note: The application might take a few moments to load initially as it loads the LLM and Embedding models into memory.
+> **Important Note on Models**: The first time you run `vectorize.py` and `app.py`, the system will automatically download the required Hugging Face models (`Qwen/Qwen2.5-3B-Instruct` for the LLM and `BAAI/bge-base-en-v1.5` for embeddings). This requires an active internet connection and will download several gigabytes of data.
+> 
+> If you wish to use a different Language Model or Embedding Model, you must update the `LLM_MODEL` and `EMBEDDING_MODEL` variables at the top of the `Fitness_App.py` file before running the application.
 
 Access the application in your browser at: `http://localhost:5000`
 
