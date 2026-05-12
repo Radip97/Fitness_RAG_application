@@ -22,7 +22,7 @@ A comprehensive Retrieval-Augmented Generation (RAG) pipeline and web applicatio
 - `Fitness_App.py`: Core RAG logic, model loading, LangChain setups, and user state management.
 - `vectorize.py`: Script used to build and populate the ChromaDB vector store from raw JSON datasets.
 - `dataset/`: Curated JSON files (`cardio.json`, `strength.json`, `flexibility.json`) providing the knowledge base.
-- `populate_dummy_data.py`: Helper script to seed the database with initial user logs.
+
 
 ## Setup & Installation 
 
